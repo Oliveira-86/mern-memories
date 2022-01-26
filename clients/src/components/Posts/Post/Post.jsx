@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardActions,
@@ -6,12 +6,13 @@ import {
   CardMedia,
   Button,
   Typography,
+  CircularProgress,
 } from "@material-ui/core/";
 
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import moment from 'moment';
+import moment from "moment";
 
 import { useDispatch } from "react-redux";
 import { deletePost, likePost } from "../../../store/actions/posts";
@@ -19,9 +20,17 @@ import { deletePost, likePost } from "../../../store/actions/posts";
 import useStyles from "./styles";
 
 const Post = ({ post, setCurrentId }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
 
   const classes = useStyles();
+
+  const onClickDeletePost = () => {
+    setIsLoading(true);
+    dispatch(deletePost(post._id));
+    setIsLoading(false);
+  };
 
   return (
     <Card className={classes.card}>
@@ -67,11 +76,22 @@ const Post = ({ post, setCurrentId }) => {
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size="small" color="primary" onClick={() => dispatch(likePost(post._id))}>
-          <ThumbUpAltIcon fontSize="small" /> Like {post.likeCount}{" "}
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => dispatch(likePost(post._id))}
+        >
+          <ThumbUpAltIcon fontSize="small" /> &nbsp; Like &nbsp;
+          {post.likeCount}
         </Button>
-        <Button size="small" color="primary" onClick={() => dispatch(deletePost(post._id))}>
-          <DeleteIcon fontSize="small" /> Delete
+        <Button size="small" color="primary" onClick={onClickDeletePost}>
+          {isLoading ? (
+            <CircularProgress color="primary" size={20} />
+          ) : (
+            <>
+              <DeleteIcon fontSize="small" /> &nbsp; Delete
+            </>
+          )}
         </Button>
       </CardActions>
     </Card>

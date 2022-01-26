@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button, Typography, Paper } from "@material-ui/core";
+import {
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  CircularProgress,
+} from "@material-ui/core";
 import FileBase from "react-file-base64";
 
 import useStyles from "./styles";
@@ -15,6 +21,7 @@ const Form = ({ currentId, setCurrentId }) => {
     tags: "",
     selectedFile: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const classes = useStyles();
 
@@ -31,6 +38,7 @@ const Form = ({ currentId, setCurrentId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    setIsLoading(true);
     if (!currentId) {
       dispatch(createPost(postData));
       clear();
@@ -38,12 +46,20 @@ const Form = ({ currentId, setCurrentId }) => {
       dispatch(updatePost(currentId, postData));
       clear();
     }
+
+    setIsLoading(false);
   };
 
   const clear = () => {
     setCurrentId(null);
 
-    setPostData({ creator: "", title: "", message: "", tags: "", selectedFile: "" });
+    setPostData({
+      creator: "",
+      title: "",
+      message: "",
+      tags: "",
+      selectedFile: "",
+    });
   };
 
   return (
@@ -89,7 +105,9 @@ const Form = ({ currentId, setCurrentId }) => {
           label="Tags"
           fullWidth
           value={postData.tags}
-          onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+          onChange={(e) =>
+            setPostData({ ...postData, tags: e.target.value.split(",") })
+          }
         />
         <div className={classes.fileInput}>
           <FileBase
@@ -108,7 +126,7 @@ const Form = ({ currentId, setCurrentId }) => {
           type="submit"
           fullWidth
         >
-          Submit
+          {isLoading ? <CircularProgress color='secondary' size={20} /> : 'Submit'}
         </Button>
 
         <Button
