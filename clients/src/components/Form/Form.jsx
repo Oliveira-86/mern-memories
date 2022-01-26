@@ -38,16 +38,17 @@ const Form = ({ currentId, setCurrentId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setIsLoading(true);
     if (!currentId) {
+      setIsLoading(true);
       dispatch(createPost(postData));
       clear();
+      setIsLoading(false);
     } else {
+      setIsLoading(true);
       dispatch(updatePost(currentId, postData));
       clear();
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const clear = () => {
@@ -126,7 +127,11 @@ const Form = ({ currentId, setCurrentId }) => {
           type="submit"
           fullWidth
         >
-          {isLoading ? <CircularProgress color='secondary' size={20} /> : 'Submit'}
+          {isLoading ? (
+            <CircularProgress color="secondary" size={20} />
+          ) : (
+            "Submit"
+          )}
         </Button>
 
         <Button

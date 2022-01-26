@@ -11,9 +11,10 @@ const Posts = ({ setCurrentId }) => {
   const classes = useStyles();
 
   const posts = useSelector((state) => state.posts);
+  console.log("Posts", posts)
 
   return !posts.length ? (
-    <CircularProgress color='white'  />
+    <CircularProgress color='secondary'  />
   ) : (
     <Grid
       className={classes.container}
