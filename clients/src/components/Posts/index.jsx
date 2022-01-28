@@ -1,5 +1,5 @@
 import React from "react";
-import Post from "./Post/Post";
+import Post from "./Post";
 
 import { CircularProgress, Grid } from "@material-ui/core";
 
@@ -11,7 +11,6 @@ const Posts = ({ setCurrentId }) => {
   const classes = useStyles();
 
   const posts = useSelector((state) => state.posts);
-  console.log("Posts", posts)
 
   return !posts.length ? (
     <CircularProgress color='secondary'  />
