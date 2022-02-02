@@ -9,6 +9,11 @@
 - Heroku (Backend)
 - Netlify (Frontend)
 
+### New Features (working)
+- Login with Email JWT
+- Pagination and Search
+- Comments on the post
+
 ### Technologies
 
 Frontend
