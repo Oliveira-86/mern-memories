@@ -1,6 +1,6 @@
 import  express  from "express";
 
-import { getPosts, createPost, updatePost, deletePost, likePost } from "../controllers/user";
+import { getPosts, createPost, updatePost, deletePost, likePost } from "../controllers/post.js";
 
 import auth from "../middleware/auth.js";
 
