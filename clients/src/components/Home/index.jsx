@@ -15,7 +15,7 @@ import ChipInput from "material-ui-chip-input";
 import Form from "../Form";
 import Posts from "../Posts";
 
-import { getPosts } from "../../store/actions/posts";
+import { getPosts, getPostsBySearch } from "../../store/actions/posts";
 import { useDispatch } from "react-redux";
 import Paginate from "../Paginate";
 
@@ -45,12 +45,13 @@ const Home = () => {
   }, [currentId, dispatch]);
 
   const searchPost = () => {
-    if (search.trim() || tags) {
-      // dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
-      // history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
-    } else {
-      history.push('/');
-    }
+    if (search.trim() || tags.length > 0) {
+      dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
+      history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
+      return
+    } 
+    
+    history.push('/');
   };
 
   const handleKeyPress = (e) => {
