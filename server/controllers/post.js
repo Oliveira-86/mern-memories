@@ -2,10 +2,25 @@ import PostMessage from "../models/postMessage.js";
 import mongoose from "mongoose";
 
 export const getPosts = async (req, res) => {
-  try {
-    const postMessages = await PostMessage.find();
+  const { page } = req.query;
 
-    res.status(202).json(postMessages);
+  try {
+    const LIMIT = 6;
+    const startIndex = Number(page - 1) * LIMIT;
+    const total = await PostMessage.countDocuments({});
+
+    const posts = await PostMessage.find()
+      .sort({ _id: -1 })
+      .limit(LIMIT)
+      .skip(startIndex);
+
+    res
+      .status(202)
+      .json({
+        data: posts,
+        currentPage: Number(page),
+        numberOfPages: Math.ceil(total / LIMIT),
+      });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -13,31 +28,37 @@ export const getPosts = async (req, res) => {
 
 export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query;
-  
+
   try {
-    const title = new RegExp(searchQuery, 'i');
+    const title = new RegExp(searchQuery, "i");
 
-    const posts = await PostMessage.find({ $or: [ { title }, { tags: { $in: tags.split(',') } }] })
+    const posts = await PostMessage.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    });
 
-    res.json({ posts })
+    res.json({ posts });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
-}
+};
 
 export const createPost = async (req, res) => {
   const post = req.body;
 
-  const newPostMessage = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
+  const newPostMessage = new PostMessage({
+    ...post,
+    creator: req.userId,
+    createdAt: new Date().toISOString(),
+  });
 
   try {
-      await newPostMessage.save();
+    await newPostMessage.save();
 
-      res.status(201).json(newPostMessage);
+    res.status(201).json(newPostMessage);
   } catch (error) {
-      res.status(409).json({ message: error.message });
+    res.status(409).json({ message: error.message });
   }
-}
+};
 
 export const updatePost = async (req, res) => {
   const { id } = req.params;
